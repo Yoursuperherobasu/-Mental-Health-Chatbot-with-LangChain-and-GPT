@@ -1,0 +1,134 @@
+Mental Health Chat Companion - User Guide
+=======================================
+
+1. System Requirements
+--------------------
+- Python 3.9 or higher
+- pip (Python package installer)
+- OpenAI API key
+- Git (for cloning the repository)
+
+2. Installation Steps
+-------------------
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd MHCforgit
+   ```
+
+2. Create a virtual environment:
+   Windows:
+   ```
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+   
+   Mac/Linux:
+   ```
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. Set up environment variables:
+   - Copy .env.example to .env
+   - Add your OpenAI API key to .env file:
+     OPENAI_API_KEY=your_api_key_here
+
+5. Run the application:
+   ```
+   python src/mental_health_chatbot3.py
+   ```
+
+6. Access the chatbot:
+   Open your web browser and go to: http://localhost:8000
+
+3. How the Chatbot Works
+----------------------
+Flow of Conversation:
+
+1. User Input Processing:
+   - User sends a message through the web interface
+   - Message is securely transmitted to the backend
+
+2. State Management:
+   - Each conversation maintains its own state
+   - Tracks conversation history, emotional context, and topics
+
+3. Processing Pipeline:
+   a) Memory Processing:
+      - Analyzes user input for key topics
+      - Stores relevant information for future reference
+      - Topics include: stress, anxiety, mood, sleep, relationships
+
+   b) Context Analysis:
+      - Evaluates emotional state from user messages
+      - Identifies relevant past conversations
+      - Updates conversation context
+
+   c) Response Generation:
+      - Uses OpenAI's GPT model
+      - Incorporates conversation history and context
+      - Generates empathetic and relevant responses
+
+4. Features
+----------
+- Context-aware conversations
+- Emotional state tracking
+- Memory of previous discussions
+- Real-time emoji enhancements
+- Secure message handling
+- Modern, responsive interface
+
+5. User Interface Elements
+------------------------
+- Chat window with message history
+- Typing indicator for bot responses
+- Input field for user messages
+- Send button with animation
+- Automatic emoji enhancement
+- Error handling with friendly messages
+
+6. Best Practices
+---------------
+- Be honest and open in your conversations
+- The chatbot is a supportive tool, not a replacement for professional help
+- For serious mental health concerns, please consult a qualified professional
+- Your conversations are processed securely
+
+7. Troubleshooting
+----------------
+Common issues and solutions:
+
+1. Installation Problems:
+   - Verify Python version: python --version
+   - Ensure virtual environment is activated
+   - Try reinstalling requirements: pip install -r requirements.txt --force-reinstall
+
+2. Connection Issues:
+   - Check if the server is running
+   - Verify localhost:8000 is accessible
+   - Check your internet connection
+
+3. API Key Issues:
+   - Ensure .env file exists and contains valid API key
+   - Check OpenAI API key validity
+   - Verify API key format
+
+4. Interface Issues:
+   - Clear browser cache
+   - Try a different browser
+   - Check console for JavaScript errors
+
+8. Support
+---------
+For issues or questions:
+- Check the GitHub repository issues section
+- Submit a new issue with detailed description
+- Include error messages and steps to reproduce
+
+Remember: This chatbot is designed to be supportive but is not a substitute for professional mental health care. If you're experiencing serious mental health issues, please seek professional help. 

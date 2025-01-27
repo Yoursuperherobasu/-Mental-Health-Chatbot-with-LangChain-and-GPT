@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wellness Chat Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #6B8DD6 0%, #8E37D7 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        #chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 15px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: #E3F2FD;
+            color: #1565C0;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            background: #F3E5F5;
+            color: #6A1B9A;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .bot-message.error {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: #E8EAF6;
+            padding: 12px 16px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: #3F51B5;
+            display: inline-block;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.3s linear infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        #chat-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        #message {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 25px;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        #message:focus {
+            border-color: #6B8DD6;
+        }
+
+        button {
+            background: linear-gradient(135deg, #6B8DD6 0%, #8E37D7 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 141, 214, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Emoji and special formatting */
+        .emoji {
+            font-size: 1.2em;
+            margin: 0 2px;
+            vertical-align: middle;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(107, 141, 214, 0.2) 0%, rgba(142, 55, 215, 0.2) 100%);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>✨ Wellness Chat Companion ✨</h1>
+            <p>A safe space to share your thoughts and feelings</p>
+        </div>
+        <div id="chat-box">
+            <div class="message bot-message">
+                Hello! I'm your wellness companion 🌸 I'm here to listen and support you. How are you feeling today?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="chat-input-container">
+            <form id="chat-form">
+                <input type="text" id="message" name="message" placeholder="Share your thoughts..." required>
+                <button type="submit">Send 💫</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const chatForm = document.getElementById("chat-form");
+        const typingIndicator = document.getElementById("typing-indicator");
+
+        // Function to safely escape HTML to prevent XSS
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Function to add emojis based on message content
+        function addEmojis(message) {
+            const emojiMap = {
+                'happy': '😊',
+                'sad': '😔',
+                'angry': '😠',
+                'worried': '😟',
+                'better': '😌',
+                'thank': '💝',
+                'help': '🤝',
+                'stress': '😩',
+                'anxiety': '😰',
+                'sleep': '😴',
+                'tired': '😫',
+                'love': '❤️',
+                'friend': '🤗',
+                'family': '👨‍👩‍👧‍👦'
+            };
+
+            let messageWithEmojis = message;
+            for (let [word, emoji] of Object.entries(emojiMap)) {
+                const regex = new RegExp(`\\b${word}\\w*\\b`, 'gi');
+                messageWithEmojis = messageWithEmojis.replace(regex, `$& ${emoji}`);
+            }
+            return messageWithEmojis;
+        }
+
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const messageInput = document.getElementById("message");
+            const message = messageInput.value;
+
+            // Clear input
+            messageInput.value = "";
+
+            // Add user message with emoji enhancement
+            chatBox.innerHTML += `
+                <div class="message user-message">
+                    ${addEmojis(escapeHtml(message))}
+                </div>
+            `;
+
+            // Show typing indicator
+            typingIndicator.style.display = "block";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // Send message to backend
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `message=${encodeURIComponent(message)}`,
+                });
+                const data = await response.json();
+
+                // Hide typing indicator
+                typingIndicator.style.display = "none";
+
+                // Add bot response with emoji enhancement
+                chatBox.innerHTML += `
+                    <div class="message bot-message">
+                        ${addEmojis(escapeHtml(data.response))}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.style.display = "none";
+                chatBox.innerHTML += `
+                    <div class="message bot-message error">
+                        Sorry, I'm having trouble responding right now. Please try again. 😔
+                    </div>
+                `;
+            }
+
+            // Scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html> 
